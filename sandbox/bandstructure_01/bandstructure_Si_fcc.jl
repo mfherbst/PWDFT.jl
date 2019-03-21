@@ -5,6 +5,7 @@ using PWDFT
 
 include("dump_bandstructure.jl")
 
+Base.show(io::IO, f::Float64) = @printf(io, "%20.15f", f)
 function test_Si_fcc()
     atoms = init_atoms_xyz_string(
         """
@@ -15,13 +16,21 @@ function test_Si_fcc()
         """, in_bohr=true)
     atoms.LatVecs = gen_lattice_fcc(10.2631)
     atoms.positions = atoms.LatVecs*atoms.positions
+
+    a = 5.1315706672
+    atoms.LatVecs = [0.0 a a; a 0.0 a; a a 0.0]
+    atoms.positions = zeros(3, 2)
+    atoms.positions[:,1] = [1.2828926668, 1.2828926668, 1.2828926668]
+    atoms.positions[:,2] = -[1.2828926668, 1.2828926668, 1.2828926668]
+    println(atoms)
+
     # Initialize Hamiltonian
-    pspfiles = ["../pseudopotentials/pade_gth/Si-q4.gth"]
+    pspfiles = ["../../pseudopotentials/pade_gth/Si-q4.gth"]
     ecutwfc_Ry = 30.0
     Ham = Hamiltonian( atoms, pspfiles, ecutwfc_Ry*0.5, meshk=[3,3,3] )
 
     KS_solve_Emin_PCG!( Ham, verbose=true )
-    
+
     println("\nTotal energy components")
     println(Ham.energies)
 
@@ -75,6 +84,13 @@ function test_Si_fcc()
         #diag_LOBPCG( Ham, psiks[ikspin], verbose_last=true )
         evals[:,ikspin], psiks[ikspin] =
         diag_davidson( Ham, psiks[ikspin], verbose_last=true )
+
+        println("--------------------  k   ---------------------")
+        println(k[:, ik])
+        println("-------------------- Eval ---------------------")
+        println(evals[:, ikspin])
+        println("-----------------------------------------------")
+
 
     end
     end
