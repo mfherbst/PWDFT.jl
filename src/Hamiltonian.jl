@@ -40,7 +40,7 @@ function Hamiltonian( atoms::Atoms, pspfiles::Array{String,1},
                       meshk = [1,1,1], shiftk = [0,0,0],
                       kpoints = nothing,
                       xcfunc = "VWN",
-                      extra_states = 0 )
+                      extra_states = 0, pw = nothing )
 
     # kpoints
     if kpoints == nothing
@@ -50,7 +50,9 @@ function Hamiltonian( atoms::Atoms, pspfiles::Array{String,1},
     end
 
     # Initialize plane wave grids
-    pw = PWGrid( ecutwfc, atoms.LatVecs, kpoints=kpoints )
+    if pw == nothing
+        pw = PWGrid( ecutwfc, atoms.LatVecs, kpoints=kpoints )
+    end
 
     Nspecies = atoms.Nspecies
     if Nspecies != size(pspfiles)[1]
