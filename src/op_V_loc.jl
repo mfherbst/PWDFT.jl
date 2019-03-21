@@ -36,7 +36,7 @@ end
 function op_V_loc( Ham::Hamiltonian, psi::Array{ComplexF64,2} )
     ispin = Ham.ispin
     ik = Ham.ik
-    V_loc = Ham.potentials.Ps_loc + Ham.potentials.Hartree + Ham.potentials.XC[:,ispin]
+    V_loc = Ham.potentials.Ps_loc
     return op_V_loc( ik, Ham.pw, V_loc, psi )
 end
 
@@ -78,7 +78,7 @@ end
 #
 function op_V_loc( Ham::Hamiltonian, psi::Array{ComplexF64,1} )
     ispin = Ham.ispin
-    V_loc = Ham.potentials.Ps_loc + Ham.potentials.Hartree + Ham.potentials.XC[:,ispin]
+    V_loc = Ham.potentials.Ps_loc
     return op_V_loc( Ham.ik, Ham.pw, V_loc, psi )
 end
 
