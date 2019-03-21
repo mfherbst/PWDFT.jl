@@ -170,7 +170,7 @@ Given rhoe in real space, update Ham.rhoe, Hartree and XC potentials.
 function update!(Ham::Hamiltonian, rhoe::Array{Float64,1})
     # assumption Nspin = 1
     Ham.rhoe[:,1] = rhoe
-    Ham.potentials.Hartree = zeros(size(Ham.potentials.Ps_loc))
+    Ham.potentials.Hartree = real( G_to_R( Ham.pw, Poisson_solve(Ham.pw, rhoe) ) )
     Ham.potentials.XC[:,1] = zeros(size(Ham.potentials.Ps_loc))
 end
 
@@ -182,7 +182,7 @@ function update!(Ham::Hamiltonian, rhoe::Array{Float64,2})
     end
     Ham.rhoe = rhoe[:,:]
     Rhoe_total = Ham.rhoe[:,1] + Ham.rhoe[:,2] # Nspin is 2
-    Ham.potentials.Hartree = zeros(size(Ham.potentials.Ps_loc))
+    Ham.potentials.Hartree = real( G_to_R( Ham.pw, Poisson_solve(Ham.pw, Rhoe_total) ) )
     Ham.potentials.XC[:,1] = zeros(size(Ham.potentials.Ps_loc))
     Ham.potentials.XC[:,2] = zeros(size(Ham.potentials.Ps_loc))
     return
