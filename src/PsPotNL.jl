@@ -1,4 +1,4 @@
-struct PsPotNL
+mutable struct PsPotNL
     NbetaNL::Int64
     prj2beta::Array{Int64,4}
     betaNL::Array{ComplexF64,3}

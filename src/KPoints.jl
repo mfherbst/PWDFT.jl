@@ -72,7 +72,7 @@ function KPoints( atoms::Atoms )
     Nkpt = 1
     k = zeros(3,1)
     wk = [1.0]
-    RecVecs = 2*pi*inv(atoms.LatVecs')
+    RecVecs = 2*pi*inv(Array(atoms.LatVecs'))
     return KPoints( Nkpt, (0,0,0), k, wk, RecVecs )
 end
 
@@ -199,7 +199,7 @@ function kpath_from_file( atoms::Atoms, filename::String )
 
     close(file)
     # kpts need to be converted to Cartesian form
-    RecVecs = 2*pi*inv(atoms.LatVecs')
+    RecVecs = 2*pi*inv(Array(atoms.LatVecs'))
     kpt = RecVecs*kred
     kpt_spec = RecVecs*kpt_spec_red
     #
