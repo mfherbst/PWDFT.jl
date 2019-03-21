@@ -3,7 +3,7 @@ if VERSION >= v"0.7.0-DEV.3382"
 end
 
 macro checked_lib(libname, path)
-    if Libdl.dlopen_e(path) == C_NULL
+    if Libdl.dlopen_e(eval(path)) == C_NULL
         error("Unable to load \n\n$libname ($path)\n\n")
     end
     quote
@@ -12,8 +12,5 @@ macro checked_lib(libname, path)
 end
 
 
-@checked_lib LIBXC "/usr/local/libxc-3.0.0/lib/libxc.so"
-@checked_lib LIBSYMSPG "/usr/local/spglib-1.10.4/lib/libsymspg.so"
-
-
-
+@checked_lib LIBXC joinpath(@__DIR__, "libxc.so")
+@checked_lib LIBSYMSPG joinpath(@__DIR__, "libsymspg.so")
