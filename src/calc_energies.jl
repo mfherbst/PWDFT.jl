@@ -1,6 +1,15 @@
 # FIXME: psi is not used
 function calc_E_xc( Ham::Hamiltonian, psi::Array{ComplexF64,2} )
-    return 0
+    CellVolume = Ham.pw.CellVolume
+    Npoints = prod(Ham.pw.Ns)
+    rhoe = Ham.rhoe
+    if Ham.xcfunc == "PBE"
+        epsxc = calc_epsxc_PBE( Ham.pw, rhoe )
+    else
+        epsxc = calc_epsxc_VWN( rhoe )
+    end
+    E_xc = dot( epsxc, rhoe ) * CellVolume/Npoints
+    return E_xc
 end
 
 
@@ -171,8 +180,12 @@ function calc_energies( Ham::Hamiltonian, psiks::Array{Array{ComplexF64,2},1} )
     E_Ps_loc = dot( potentials.Ps_loc, Rhoe_total ) * dVol
 
     Rhoe = Ham.rhoe
-    epsxc = 0
-    E_xc = 0
+    if Ham.xcfunc == "PBE"
+        epsxc = calc_epsxc_PBE( Ham.pw, Rhoe )
+    else
+        epsxc = calc_epsxc_VWN( Rhoe )
+    end
+    E_xc = dot( epsxc, Rhoe_total ) * dVol
 
     if Ham.pspotNL.NbetaNL > 0
         E_Ps_nloc = calc_E_Ps_nloc( Ham, psiks )
@@ -232,8 +245,12 @@ function calc_energies( Ham::Hamiltonian, psi::Array{ComplexF64,2} )
 
     E_Ps_loc = dot( potentials.Ps_loc, Rhoe ) * CellVolume/Npoints
 
-    epsxc = 0
-    E_xc = 0
+    if Ham.xcfunc == "PBE"
+        epsxc = calc_epsxc_PBE( Ham.pw, Rhoe )
+    else
+        epsxc = calc_epsxc_VWN( Rhoe )
+    end
+    E_xc = dot( epsxc, Rhoe ) * CellVolume/Npoints
 
     if Ham.pspotNL.NbetaNL > 0
         E_Ps_nloc = calc_E_Ps_nloc( Ham, psi )
