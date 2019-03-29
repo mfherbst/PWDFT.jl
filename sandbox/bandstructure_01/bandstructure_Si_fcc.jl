@@ -29,7 +29,15 @@ function test_Si_fcc()
     ecutwfc_Ry = 30.0
     Ham = Hamiltonian( atoms, pspfiles, ecutwfc_Ry*0.5, meshk=[3,3,3] )
 
-    KS_solve_Emin_PCG!( Ham, verbose=true )
+    KS_solve_Emin_PCG!( Ham, verbose=true , savewfc=true)
+    println("------- kpoints --------")
+    println(Ham.pw.gvecw.kpoints)
+    println("------------------------")
+
+    write_GVectors(open("GVectors.data", "w"), Ham.pw.gvec)
+    return Ham
+
+
 
     println("\nTotal energy components")
     println(Ham.energies)
